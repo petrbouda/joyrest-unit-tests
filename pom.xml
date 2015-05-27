@@ -43,7 +43,7 @@
 
         <slf4.version>1.7.12</slf4.version>
 
-        <joyrest.version>1.2-SNAPSHOT</joyrest.version>
+        <joyrest.version>1.2</joyrest.version>
 
         <maven-source-plugin.version>2.4</maven-source-plugin.version>
         <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
@@ -120,20 +120,6 @@
                     </execution>
                     <execution>
                         <phase>deploy</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>${maven-javadoc-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
                         <goals>
                             <goal>jar</goal>
                         </goals>
