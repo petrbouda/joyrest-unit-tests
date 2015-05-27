@@ -28,6 +28,6 @@ public @interface TestedController {
 
     Class<? extends ControllerConfiguration> value();
 
-	String globalPath() default "";
+	String controllerPath() default "";
 
 }

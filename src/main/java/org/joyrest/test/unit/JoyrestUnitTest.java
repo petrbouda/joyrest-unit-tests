@@ -17,17 +17,13 @@ package org.joyrest.test.unit;
 
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static org.joyrest.exception.type.RestException.notFoundSupplier;
 import static org.joyrest.model.http.HttpMethod.*;
 import static org.joyrest.utils.PathUtils.getPathParams;
 
-import java.util.Arrays;
 import java.util.Set;
 
-import org.easymock.EasyMockRule;
 import org.easymock.EasyMockSupport;
-import org.easymock.TestSubject;
 import org.joyrest.model.http.HttpMethod;
 import org.joyrest.model.request.InternalRequest;
 import org.joyrest.routing.ControllerConfiguration;
@@ -37,7 +33,6 @@ import org.joyrest.routing.PathCorrector;
 import org.joyrest.routing.matcher.RequestMatcher;
 import org.joyrest.stream.BiStream;
 import org.joyrest.test.unit.annotation.TestedController;
-import org.joyrest.test.unit.easymock.JoyrestInjector;
 import org.joyrest.test.unit.model.MockRequest;
 import org.joyrest.test.unit.model.MockResponse;
 import org.joyrest.test.unit.rule.JoyrestRule;
@@ -58,25 +53,25 @@ public abstract class JoyrestUnitTest extends EasyMockSupport {
 
 	}
 
-	@SuppressWarnings({"unchecked", "rawtypes"})
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected void call(HttpMethod method, String path, MockRequest req, MockResponse resp) {
 		initialize();
 
 		req.setMethod(method);
-		req.setPath(createPath(holder.getGlobalPath(), pathCorrector.apply(path)));
+		req.setPath(createPath(holder.getControllerPath(), pathCorrector.apply(path)));
 		InternalRoute route = resolveRoute(routes, req);
 		req.setPathParams(getPathParams(route, req.getPathParts()));
 		route.execute(req, resp);
 	}
 
 	public void initialize() {
-		if (!holder.isAnnonationInitialized())
+		if (!holder.isAnnotationInitialized())
 			configure();
 
 		ControllerConfiguration controller = holder.getController();
 		if (isNull(controller))
 			throw new RuntimeException(format("There is no defined any tested controller. Use '%s' annotation " +
-				"on the given test class or setter in 'configure' method.", TestedController.class.getCanonicalName()));
+					"on the given test class or setter in 'configure' method.", TestedController.class.getCanonicalName()));
 
 		controller.initialize();
 		routes = controller.getRoutes();
@@ -98,12 +93,12 @@ public abstract class JoyrestUnitTest extends EasyMockSupport {
 	public InternalRoute resolveRoute(Set<InternalRoute> routes, InternalRequest<?> request) {
 		return BiStream.of(routes.stream(), request)
 			.throwIfNull(pathComparator, notFoundSupplier(format(
-				"There is no route suitable for path [%s]",
-				request.getPath())))
+					"There is no route suitable for path [%s]",
+					request.getPath())))
 
 			.throwIfNull(RequestMatcher::matchHttpMethod, notFoundSupplier(format(
-				"There is no route suitable for path [%s], method [%s]",
-				request.getPath(), request.getMethod())))
+					"There is no route suitable for path [%s], method [%s]",
+					request.getPath(), request.getMethod())))
 
 			.findAny().get();
 	}
@@ -141,7 +136,7 @@ public abstract class JoyrestUnitTest extends EasyMockSupport {
 	}
 
 	public void setGlobalPath(String globalPath) {
-		this.holder.setGlobalPath(pathCorrector.apply(globalPath));
+		this.holder.setControllerPath(pathCorrector.apply(globalPath));
 	}
 
 	public void setController(ControllerConfiguration controller) {

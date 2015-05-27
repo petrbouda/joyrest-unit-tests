@@ -19,11 +19,11 @@ public class JoyrestRule implements TestRule {
 
 	private final JoyrestUnitTest test;
 
-	private String globalPath = "";
+	private String controllerPath = "";
 
 	private ControllerConfiguration controller = null;
 
-	private boolean annonationInitialized = false;
+	private boolean annotationInitialized = false;
 
 	public JoyrestRule(JoyrestUnitTest test) {
 		this.test = test;
@@ -46,7 +46,7 @@ public class JoyrestRule implements TestRule {
 		public void evaluate() throws Throwable {
 			initControllerFromAnnotation();
 
-			if (!annonationInitialized)
+			if (!annotationInitialized)
 				if (containsTestSubject(test.getClass()))
 					EasyMockSupport.injectMocks(test);
 
@@ -57,11 +57,11 @@ public class JoyrestRule implements TestRule {
 			TestedController annotation = test.getClass().getAnnotation(TestedController.class);
 
 			if (nonNull(annotation)) {
-				globalPath = annotation.globalPath();
+				controllerPath = annotation.controllerPath();
 				controller = getController(annotation.value());
 
 				JoyrestInjector.injectMocks(test, controller);
-				annonationInitialized = true;
+				annotationInitialized = true;
 			}
 		}
 
@@ -80,20 +80,20 @@ public class JoyrestRule implements TestRule {
 		}
 	}
 
-	public void setGlobalPath(String globalPath) {
-		this.globalPath = globalPath;
+	public void setControllerPath(String controllerPath) {
+		this.controllerPath = controllerPath;
 	}
 
 	public void setController(ControllerConfiguration controller) {
 		this.controller = controller;
 	}
 
-	public boolean isAnnonationInitialized() {
-		return annonationInitialized;
+	public boolean isAnnotationInitialized() {
+		return annotationInitialized;
 	}
 
-	public String getGlobalPath() {
-		return globalPath;
+	public String getControllerPath() {
+		return controllerPath;
 	}
 
 	public ControllerConfiguration getController() {
