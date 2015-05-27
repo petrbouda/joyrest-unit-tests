@@ -3,7 +3,7 @@
 
     <groupId>org.joyrest</groupId>
     <artifactId>joyrest-unit-tests</artifactId>
-    <version>1.0</version>
+    <version>1.1-SNAPSHOT</version>
 
     <name>joyrest-unit-tests</name>
 
@@ -23,7 +23,7 @@
         <connection>scm:git:git@github.com:petrbouda/joyrest-unit-tests.git</connection>
         <url>git@github.com:petrbouda/joyrest-unit-tests.git</url>
         <developerConnection>scm:git:git@github.com:petrbouda/joyrest-unit-tests.git</developerConnection>
-      <tag>joyrest-unit-tests-1.0</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <developers>
