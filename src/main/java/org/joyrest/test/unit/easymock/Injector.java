@@ -1,3 +1,18 @@
+/*
+ * Copyright 2015 Petr Bouda
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.joyrest.test.unit.easymock;
 
 import static java.lang.String.format;
@@ -8,21 +23,20 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
+import org.easymock.EasyMockSupport;
 import org.easymock.Mock;
 import org.easymock.internal.Injection;
 import org.easymock.internal.InjectionPlan;
 import org.easymock.internal.InjectionTarget;
-import org.joyrest.routing.ControllerConfiguration;
-import org.joyrest.test.unit.JoyrestUnitTest;
 
-public class JoyrestInjector {
+public class Injector {
 
-	public static void injectMocks(JoyrestUnitTest test, ControllerConfiguration controller) {
+	public static void injectMocks(EasyMockSupport test, Object handler) {
 		requireNonNull(test);
 
 		InjectionPlan injectionPlan = new InjectionPlan();
 		createMocksForAnnotations(test, injectionPlan);
-		injectMocksOnClass(controller, injectionPlan);
+		injectMocksOnClass(handler, injectionPlan);
 
 		// Check for unsatisfied qualified injections only after having scanned all TestSubjects and their superclasses
 		for (Injection injection : injectionPlan.getQualifiedInjections())
@@ -32,16 +46,7 @@ public class JoyrestInjector {
 
 	}
 
-	private static ControllerConfiguration getController(Class<? extends ControllerConfiguration> clazz) {
-		try {
-			return clazz.newInstance();
-		} catch (Exception e) {
-			throw new RuntimeException(
-					format("Error occurred during initialization class '%s'.", clazz.getCanonicalName()), e);
-		}
-	}
-
-	private static void createMocksForAnnotations(JoyrestUnitTest test, InjectionPlan injectionPlan) {
+	private static void createMocksForAnnotations(EasyMockSupport test, InjectionPlan injectionPlan) {
 		for (Field field : test.getClass().getDeclaredFields()) {
 			Mock annotation = field.getAnnotation(Mock.class);
 			if (isNull(annotation))
@@ -64,13 +69,12 @@ public class JoyrestInjector {
 		}
 	}
 
-	private static void injectMocksOnClass(ControllerConfiguration controller, InjectionPlan injectionPlan) {
+	private static void injectMocksOnClass(Object controller, InjectionPlan injectionPlan) {
 		List<Field> fields = injectByName(controller.getClass(), controller, injectionPlan.getQualifiedInjections());
 		injectByType(controller, fields, injectionPlan.getUnqualifiedInjections());
 	}
 
-	private static List<Field> injectByName(Class<? extends ControllerConfiguration> controllerClazz,
-			ControllerConfiguration controller, List<Injection> qualifiedInjections) {
+	private static List<Field> injectByName(Class<?> controllerClazz, Object controller, List<Injection> qualifiedInjections) {
 
 		List<Field> fields = asList(controllerClazz.getDeclaredFields());
 		for (Injection injection : qualifiedInjections) {

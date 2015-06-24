@@ -35,13 +35,13 @@ import org.joyrest.stream.BiStream;
 import org.joyrest.test.unit.annotation.TestedController;
 import org.joyrest.test.unit.model.MockRequest;
 import org.joyrest.test.unit.model.MockResponse;
-import org.joyrest.test.unit.rule.JoyrestRule;
+import org.joyrest.test.unit.rule.ControllerRule;
 import org.junit.Rule;
 
-public abstract class JoyrestUnitTest extends EasyMockSupport {
+public abstract class ControllerUnitTest extends EasyMockSupport {
 
 	@Rule
-	public JoyrestRule holder = new JoyrestRule(this);
+	public ControllerRule holder = new ControllerRule(this);
 
 	private Set<InternalRoute> routes = null;
 
@@ -71,7 +71,7 @@ public abstract class JoyrestUnitTest extends EasyMockSupport {
 		ControllerConfiguration controller = holder.getController();
 		if (isNull(controller))
 			throw new RuntimeException(format("There is no defined any tested controller. Use '%s' annotation " +
-					"on the given test class or setter in 'configure' method.", TestedController.class.getCanonicalName()));
+					" on the given test class or setter in 'configure' method.", TestedController.class.getCanonicalName()));
 
 		controller.initialize();
 		routes = controller.getRoutes();
